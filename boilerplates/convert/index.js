@@ -40,7 +40,10 @@ ipcMain.on('conversion:start', (event, videos) =>{
 
     ffmpeg(video.path)
       .output(outputPath)
-      .on('end', () => mainWindow.webContents.send('conversion:end', { video, outputPath }))
+      .on('end', () =>
+          mainWindow.webContents.send('conversion:end', { video, outputPath }))
+      .on('progress', ({ timemark }) =>
+          mainWindow.webContents.send('conversion:progress', { video, timemark}))
       .run();
     });
 });
