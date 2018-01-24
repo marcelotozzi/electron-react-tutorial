@@ -32,10 +32,15 @@ ipcMain.on('videos:added', (event, videos) => {
 });
 
 ipcMain.on('conversion:start', (event, videos) =>{
-  const video = videos[0];
+  _.each(videos, video => {
 
-  const outputDir = video.path.split(video.name)[0];
-  const outputName = video.name.split('.')[0];
-  const outputPath = `${outputDir}${outputName}.${video.format}`;
-  console.log(outputPath);
+    const outputDir = video.path.split(video.name)[0];
+    const outputName = video.name.split('.')[0];
+    const outputPath = `${outputDir}${outputName}.${video.format}`;
+
+    ffmpeg(video.path)
+      .output(outputPath)
+      .on('end', () => console.log('Video conversion complete'))
+      .run();
+    });
 });
